@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ehan Badenhorst | Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+    <h1>Ehan B.</h1>
+    <ul>
+        <li><a href="home.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="skills.html">Skills</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="cv.html">CV</a></li>
+        <li><a href="contact.html">Contact</a></li>
+    </ul>
+    </nav>
+
+    <section>
+            <div class="intro-container">
+                <img src="WhatsApp Image 2025-09-08 at 19.20.51_ca7b05aa.jpg" alt="Ehan Badenhorst" class="profile-pic">
+                <div class="intro-text">
+                    <h2>Hello, I'm <span style="color: var(--accent-color)">Ehan Badenhorst</span></h2>
+                    <p>Aspiring Software Engineer | Problem Solver | Tech Enthusiast</p>
+                    <p>Welcome! I’m Ehan Badenhorst, an aspiring software engineer with a strong foundation in both software and hardware systems. My academic journey has equipped me with practical experience in Python, core programming principles, and advanced web development using HTML, JavaScript, and CSS. I have built functional websites as part of my studies and am currently expanding my skills by learning Java. I am also familiar with Microsoft Azure services and version control tools such as Git and GitHub.</p>
+                    <p>Growing up on a farm, I developed a deep appreciation for the agricultural sector and understand the importance of integrating technology to drive efficiency and informed decision-making. My hands-on experience in agriculture, combined with my technical expertise, allows me to bridge the gap between traditional practices and modern solutions.</p>
+                    <p>In addition to my technical skills, I bring a strong work ethic, discipline, and adaptability—qualities honed through years of working on a dairy farm. I am experienced in troubleshooting, installation, and maintenance of hardware and software systems, and I value both independent work and effective teamwork.</p>
+                    <p>I am highly motivated to build my career in IT and am eager to contribute my skills and passion to a forward-thinking team. Thank you for visiting my website—I look forward to connecting and exploring new opportunities!</p>
+                </div>
+            </div>
+            <br>
+    <a href="cv.html" class="btn">View My CV</a>
+    <a href="contact.html" class="btn">Contact Me</a>
+    </section>
+
+    <footer>
+        <style>
+            .intro-container {
+                display: flex;
+                align-items: flex-start;
+                gap: 2rem;
+                flex-wrap: wrap;
+            }
+            .profile-pic {
+                width: 220px;
+                height: 220px;
+                object-fit: cover;
+                border-radius: 30px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+                border: 3px solid #e0e0e0;
+                background: #fafafa;
+                margin-bottom: 1rem;
+            }
+            .intro-text {
+                flex: 1 1 320px;
+                min-width: 260px;
+            }
+            @media (max-width: 700px) {
+                .intro-container {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .profile-pic {
+                    margin-bottom: 1.5rem;
+                }
+                .intro-text {
+                    min-width: 0;
+                }
+            }
+        </style>
+    &copy; 2025 Ehan Badenhorst | All Rights Reserved
+    </footer>
+</body>
+</html>
