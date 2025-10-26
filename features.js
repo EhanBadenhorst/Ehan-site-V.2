@@ -141,7 +141,31 @@ function initMobileNav() {
 
     console.log('✅ Mobile nav initialized: navigation will remain visible at the top (no hamburger).');
 }
+// Wait for the document to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
 
+    // Get the hamburger button and the navigation links container
+    const menuToggle = document.querySelector('.menu-toggle'); // Or '.hamburger-menu', etc.
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle && navLinks) {
+        // Add a click event listener to the hamburger button
+        menuToggle.addEventListener('click', () => {
+            // This line adds/removes the 'active' class
+            navLinks.classList.toggle('active');
+        });
+
+        // --- OPTIONAL (BUT RECOMMENDED) ---
+        // This closes the menu when you click a link
+        const allNavLinks = document.querySelectorAll('.nav-links li a');
+        
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+    }
+});
 // ============================================
 // SCROLL ANIMATIONS
 // ============================================
