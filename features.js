@@ -65,10 +65,9 @@ function addThemeToggleButton() {
         return;
     }
     
-    // Check if button already exists
+    // If button already exists, update and ensure placement
     if (document.querySelector('.theme-toggle')) {
         updateAllToggleButtons(document.body.classList.contains('dark-theme'));
-        // Ensure placement is correct for current viewport
         placeThemeToggleForViewport();
         return;
     }
@@ -85,9 +84,7 @@ function addThemeToggleButton() {
     
     // Default placement: inside nav (desktop)
     nav.appendChild(button);
-    // Place properly depending on viewport (may move to mobile container)
     placeThemeToggleForViewport();
-    // Keep placement in sync on resize
     window.addEventListener('resize', placeThemeToggleForViewport);
     
     console.log('✅ Dark mode toggle added');
@@ -97,6 +94,7 @@ function placeThemeToggleForViewport() {
     const button = document.querySelector('.theme-toggle');
     if (!button) return;
     const nav = document.querySelector('nav');
+
     // Find an existing mobile container or header actions area
     let mobileContainer = document.querySelector('.mobile-tools') || document.querySelector('.header-actions') || null;
 
@@ -105,15 +103,11 @@ function placeThemeToggleForViewport() {
         if (!mobileContainer) {
             mobileContainer = document.createElement('div');
             mobileContainer.className = 'mobile-tools';
-            // Try to place mobile-tools next to nav toggle (if present) or at top of body
-            const navToggle = document.querySelector('.nav-toggle');
-            if (navToggle && navToggle.parentNode) {
-                navToggle.parentNode.insertBefore(mobileContainer, navToggle.nextSibling);
-            } else if (nav && nav.parentNode) {
-                // place just before nav in DOM
-                nav.parentNode.insertBefore(mobileContainer, nav);
-            } else {
+            // Place mobile-tools at top of body if no header-actions exists
+            if (document.body.firstChild) {
                 document.body.insertBefore(mobileContainer, document.body.firstChild);
+            } else {
+                document.body.appendChild(mobileContainer);
             }
         }
         if (button.parentNode !== mobileContainer) {
@@ -130,7 +124,7 @@ function placeThemeToggleForViewport() {
 }
 
 // ============================================
-// MOBILE NAV BEHAVIOR
+// MOBILE NAV BEHAVIOR (KEEP NAV VISIBLE)
 // ============================================
 
 function initMobileNav() {
@@ -138,86 +132,14 @@ function initMobileNav() {
     if (!nav) return;
     if (nav.dataset.mobileInit === 'true') return; // already initialized
     nav.dataset.mobileInit = 'true';
-    
-    // Create nav toggle button (hamburger)
-    const toggle = document.createElement('button');
-    toggle.className = 'nav-toggle';
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open navigation');
-    toggle.innerHTML = '<span class="hamburger">☰</span>';
-    
-    // Insert toggle before nav in DOM if possible
-    if (nav.parentNode) {
-        nav.parentNode.insertBefore(toggle, nav);
-    } else {
-        document.body.insertBefore(toggle, document.body.firstChild);
-    }
-    
-    function closeNav() {
-        nav.classList.remove('nav-open');
-        nav.style.display = 'none';
-        toggle.setAttribute('aria-expanded', 'false');
-    }
-    function openNav() {
-        nav.classList.add('nav-open');
-        nav.style.display = 'block';
-        toggle.setAttribute('aria-expanded', 'true');
-    }
-    
-    // Toggle handler
-    toggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const opened = nav.classList.toggle('nav-open');
-        if (opened) {
-            openNav();
-        } else {
-            closeNav();
-        }
-    });
-    
-    // Close when clicking outside nav on mobile
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-                closeNav();
-            }
-        }
-    });
-    
-    // Close when a nav link is clicked (mobile)
-    nav.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-            if (window.innerWidth <= MOBILE_BREAKPOINT) {
-                closeNav();
-            }
-        });
-    });
-    
-    // Resize handling: hide/show nav and toggle according to viewport
-    function updateNavDisplay() {
-        if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            // mobile: hide nav by default (unless already open)
-            if (!nav.classList.contains('nav-open')) {
-                nav.style.display = 'none';
-            }
-            toggle.style.display = '';
-            // Ensure theme toggle placement too
-            placeThemeToggleForViewport();
-        } else {
-            // desktop: always show nav, hide mobile toggle
-            nav.style.display = '';
-            toggle.style.display = 'none';
-            nav.classList.remove('nav-open');
-            toggle.setAttribute('aria-expanded', 'false');
-            placeThemeToggleForViewport();
-        }
-    }
-    
-    window.addEventListener('resize', updateNavDisplay);
-    // Initial state
-    updateNavDisplay();
-    
-    console.log('✅ Mobile nav initialized');
+
+    // Ensure nav remains visible on mobile; no hamburger created.
+    nav.style.display = ''; // let CSS handle layout
+    // Make nav sticky via CSS (see CSS snippet)
+    // Ensure theme toggle placement updates on resize
+    window.addEventListener('resize', placeThemeToggleForViewport);
+
+    console.log('✅ Mobile nav initialized: navigation will remain visible at the top (no hamburger).');
 }
 
 // ============================================
