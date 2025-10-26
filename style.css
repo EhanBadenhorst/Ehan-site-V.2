@@ -1,17 +1,37 @@
+/* ============================================
+   MERGED stylesheet
+   Combines your existing theme + layout
+   with the previously suggested mobile-tools,
+   sticky nav, dark-mode variables, animations,
+   and project filter styles.
+   Drop this into your main CSS (replace or merge).
+   ============================================ */
+
 /* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+/* -------------------------
+   Theme variables (primary)
+   Keep your color system while exposing
+   CSS variables used by the JS toggle.
+   ------------------------- */
 :root {
-  --bg-color: #b69e3e;
-  --text-color: #ffffff;
+  --bg-color: #b69e3e;      /* main background (light) */
+  --text-color: #ffffff;    /* main text color (light) */
   --accent-color: #5c5a33d5;
   --card-bg: #80795a;
   --nav-bg: #26304d;
   --footer-bg: #242c42;
   --transition-speed: 0.3s;
+
+  /* compatibility vars used by earlier CSS */
+  --bg: var(--bg-color);
+  --text: var(--text-color);
+  --accent: var(--accent-color);
+  --shadow: 0 6px 18px rgba(18, 18, 18, 0.06);
 }
 
-/* Dark Mode Variables */
+/* Dark Mode Variables (toggled by .dark-theme on body) */
 body.dark-theme {
   --bg-color: #1a1a2e;
   --text-color: #eaeaea;
@@ -19,8 +39,17 @@ body.dark-theme {
   --card-bg: #16213e;
   --nav-bg: #0f1419;
   --footer-bg: #0a0e1a;
+
+  /* compatibility */
+  --bg: var(--bg-color);
+  --text: var(--text-color);
+  --accent: var(--accent-color);
+  --shadow: 0 6px 18px rgba(0,0,0,0.6);
 }
 
+/* -------------------------
+   Base layout & typography
+   ------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -28,16 +57,37 @@ body.dark-theme {
   font-family: 'Poppins', sans-serif;
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+html, body {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  transition: background-color var(--transition-speed) ease, 
+  transition: background-color var(--transition-speed) ease,
               color var(--transition-speed) ease;
   overflow-x: hidden;
 }
 
-/* Navbar */
+/* Links & buttons */
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--accent);
+  border-radius: 8px;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* -------------------------
+   Navbar - sticky and visible
+   ------------------------- */
 nav {
   background: var(--nav-bg);
   padding: 15px 30px;
@@ -47,25 +97,33 @@ nav {
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: background var(--transition-speed) ease;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: background var(--transition-speed) ease, padding 0.15s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  backdrop-filter: blur(4px);
 }
 
-nav h1 {
-  color: var(--accent-color);
+/* Logo & branding */
+nav h1, nav .logo {
+  color: var(--accent);
   font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   animation: slideInLeft 0.6s ease;
 }
 
+/* nav links */
 nav ul {
   list-style: none;
   display: flex;
   gap: 20px;
+  align-items: center;
   animation: slideInRight 0.6s ease;
 }
 
-nav ul li a {
-  color: var(--text-color);
+nav ul li a, nav a.nav-link {
+  color: var(--text);
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -81,7 +139,7 @@ nav ul li a::after {
   left: 50%;
   width: 0;
   height: 2px;
-  background: var(--accent-color);
+  background: var(--accent);
   transition: width 0.3s ease, left 0.3s ease;
 }
 
@@ -93,12 +151,14 @@ nav ul li a.active::after {
 
 nav ul li a:hover,
 nav ul li a.active {
-  color: var(--accent-color);
+  color: var(--accent);
 }
 
-/* Dark Mode Toggle Button */
+/* -------------------------
+   Theme toggle button styles
+   ------------------------- */
 .theme-toggle {
-  background: var(--accent-color);
+  background: var(--accent);
   color: var(--nav-bg);
   border: none;
   padding: 8px 16px;
@@ -107,7 +167,7 @@ nav ul li a.active {
   font-weight: 600;
   transition: all var(--transition-speed) ease;
   margin-left: 20px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
 }
@@ -117,7 +177,33 @@ nav ul li a.active {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Section Styling */
+/* mobile variation (when moved by JS) */
+.theme-toggle.theme-toggle-mobile {
+  font-size: 0.9rem;
+  padding: 0.35rem 0.6rem;
+  background: rgba(0,0,0,0.06);
+  color: var(--text);
+  border-radius: 8px;
+}
+
+/* Icon/text parts */
+.theme-icon { line-height: 1; }
+.theme-text { font-weight: 600; }
+
+/* -------------------------
+   mobile-tools container (for mobile toggle placement)
+   ------------------------- */
+.mobile-tools {
+  display: none; /* toggled via media query */
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.35rem 0.5rem;
+}
+
+/* -------------------------
+   Page sections, cards & projects
+   ------------------------- */
 section {
   padding: 60px 20px;
   max-width: 1000px;
@@ -125,123 +211,16 @@ section {
   animation: fadeInUp 0.8s ease;
 }
 
-h2 {
-  color: var(--accent-color);
+h2, h3 {
+  color: var(--accent);
   margin-bottom: 10px;
 }
 
-h3 {
-  color: var(--accent-color);
-  margin-bottom: 10px;
-  margin-top: 20px;
-}
-
-
-/* Mobile nav + theme toggle styles (adjust to match your site) */
-.nav-toggle {
-  display: none; /* shown via JS on small screens */
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  align-items: center;
-}
-
-nav {
-  /* allow transition if desired */
-  transition: all 0.2s ease;
-}
-
-/* When nav-open class is set, nav will be visible on mobile */
-nav.nav-open {
-  display: block !important;
-}
-
-/* mobile-tools holds mobile-only actions (e.g., theme toggle) */
-.mobile-tools {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-/* Theme toggle mobile tweaks */
-.theme-toggle.theme-toggle-mobile {
-  font-size: 0.9rem;
-  padding: 0.25rem 0.5rem;
-}
-
-/* Responsive rules */
-@media (max-width: 768px) {
-  .nav-toggle {
-    display: inline-flex;
-  }
-  nav {
-    display: none; /* hidden by default until opened by JS */
-  }
-  /* Example: stack mobile-tools near top */
-  .mobile-tools {
-    display: flex;
-  }
-}
-
-/* Buttons */
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background: var(--accent-color);
-  color: #fff;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: transform var(--transition-speed) ease, 
-              background var(--transition-speed) ease,
-              box-shadow var(--transition-speed) ease;
-  margin-right: 10px;
-  margin-top: 10px;
-}
-
-.btn:hover {
-  transform: translateY(-3px);
-  background: #f3dd62;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-/* Project Filters */
-.project-filters {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
-  animation: fadeIn 0.6s ease;
-}
-
-.filter-btn {
-  padding: 8px 16px;
-  background: var(--card-bg);
-  color: var(--text-color);
-  border: 2px solid transparent;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all var(--transition-speed) ease;
-}
-
-.filter-btn:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-}
-
-.filter-btn.active {
-  background: var(--accent-color);
-  color: #fff;
-  border-color: var(--accent-color);
-}
-
-/* Project Cards */
 .projects {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
+  padding: 1rem;
 }
 
 .card {
@@ -253,9 +232,11 @@ nav.nav-open {
               background var(--transition-speed) ease;
   animation: fadeInUp 0.6s ease;
   animation-fill-mode: both;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: var(--shadow);
 }
 
+/* Staggered animation helper (kept for convenience) */
 .card:nth-child(1) { animation-delay: 0.1s; }
 .card:nth-child(2) { animation-delay: 0.2s; }
 .card:nth-child(3) { animation-delay: 0.3s; }
@@ -263,38 +244,53 @@ nav.nav-open {
 
 .card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.18);
 }
 
 .card.hidden {
-  display: none;
+  display: none !important;
 }
 
-/* CV Image */
+/* Project filters */
+.project-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  animation: fadeIn 0.6s ease;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* CV image, intro, skills */
 .cv-img {
   max-width: 100%;
   height: auto;
-  border: 1px solid #444;
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 10px;
   transition: transform var(--transition-speed) ease;
 }
 
-.cv-img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: var(--footer-bg);
-  margin-top: 40px;
-  font-size: 0.9rem;
-  transition: background var(--transition-speed) ease;
-}
-
-/* Intro Container */
 .intro-container {
   display: flex;
   align-items: flex-start;
@@ -309,25 +305,11 @@ footer {
   object-fit: cover;
   border-radius: 30px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  border: 3px solid var(--accent-color);
+  border: 3px solid var(--accent);
   background: #fafafa;
-  margin-bottom: 1rem;
-  transition: transform var(--transition-speed) ease,
-              box-shadow var(--transition-speed) ease;
-  animation: fadeIn 1s ease;
 }
 
-.profile-pic:hover {
-  transform: scale(1.05) rotate(2deg);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
-
-.intro-text {
-  flex: 1 1 320px;
-  min-width: 260px;
-}
-
-/* Skills List Styling */
+/* Skills list */
 section ul {
   list-style: none;
   padding-left: 0;
@@ -344,121 +326,109 @@ section ul li {
   border-left: 3px solid transparent;
 }
 
-section ul li:nth-child(1) { animation-delay: 0.1s; }
-section ul li:nth-child(2) { animation-delay: 0.2s; }
-section ul li:nth-child(3) { animation-delay: 0.3s; }
-section ul li:nth-child(4) { animation-delay: 0.4s; }
-section ul li:nth-child(5) { animation-delay: 0.5s; }
-
-section ul li:hover {
-  transform: translateX(10px);
-  border-left-color: var(--accent-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: var(--footer-bg);
+  margin-top: 40px;
+  font-size: 0.9rem;
+  transition: background var(--transition-speed) ease;
 }
 
-section p {
-  margin-bottom: 1.2em;
-  animation: fadeIn 0.8s ease;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { 
-    opacity: 0;
-  }
-  to { 
-    opacity: 1;
-  }
-}
+/* -------------------------
+   Animations & scroll reveal
+   ------------------------- */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 @keyframes fadeInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
-/* Scroll Reveal */
 .scroll-reveal {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
-
 .scroll-reveal.revealed {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Responsive */
+/* -------------------------
+   Responsive rules
+   ------------------------- */
 @media (max-width: 768px) {
+  /* keep nav visible but stack content */
   nav {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    padding: 12px 16px;
   }
-  
+
   nav ul {
     flex-direction: column;
     gap: 10px;
     text-align: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
   }
-  
+
+  /* show mobile-tools for toggle placement */
+  .mobile-tools {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
   .theme-toggle {
     margin-left: 0;
   }
-  
+
   .intro-container {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .profile-pic {
     margin-bottom: 1.5rem;
   }
-  
+
   .intro-text {
     min-width: 0;
   }
-  
+
   .project-filters {
     justify-content: center;
   }
+
+  /* make theme toggle more compact */
+  .theme-toggle {
+    font-size: 0.95rem;
+    padding: 0.25rem 0.45rem;
+  }
 }
 
+/* Accessibility: focus outlines */
+a:focus, button:focus {
+  outline: 3px solid rgba(37,99,235,0.18);
+  outline-offset: 3px;
+}
+</css>
