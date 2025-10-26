@@ -1,49 +1,48 @@
-// ===================================
-// FEATURE FLAGS CONFIGURATION
-// ===================================
-const featureFlags = {
-    'dark-mode': true,
-    'project-filters': true,
-    'animations': true,
-    'contact-form-v2': false,
-    'enhanced-navigation': false
+// ============================================
+// EHAN'S PORTFOLIO - SITE FEATURES
+// Dark Mode, Animations, and Project Filters
+// ============================================
+
+console.log('🚀 Loading site features...');
+
+// Feature Flags
+const features = {
+    darkMode: true,
+    animations: true,
+    projectFilters: true
 };
 
-// Helper function to check if feature is enabled
-function isFeatureEnabled(flagName) {
-    return featureFlags[flagName] === true;
-}
-
-// ===================================
+// ============================================
 // DARK MODE FUNCTIONALITY
-// ===================================
+// ============================================
+
 function toggleTheme() {
-    if (!isFeatureEnabled('dark-mode')) {
-        console.log('Dark mode feature is disabled');
-        return;
-    }
+    if (!features.darkMode) return;
     
     document.body.classList.toggle('dark-theme');
     const isDark = document.body.classList.contains('dark-theme');
     
-    // Update ALL toggle buttons on the page (in case there are multiple)
-    document.querySelectorAll('.theme-toggle').forEach(button => {
-        const themeIcon = button.querySelector('#theme-icon') || button.querySelector('.theme-icon');
-        const themeText = button.querySelector('#theme-text') || button.querySelector('.theme-text');
-        
-        if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
-        if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
-    });
+    // Update all toggle buttons
+    updateAllToggleButtons(isDark);
     
-    // Save preference to localStorage (persists across ALL pages)
+    // Save to localStorage
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     
-    console.log(`Theme switched to: ${isDark ? 'dark' : 'light'} mode`);
+    console.log(`✅ Theme switched to ${isDark ? 'dark' : 'light'} mode`);
 }
 
-// Load saved theme preference IMMEDIATELY (before page renders)
-function loadThemePreference() {
-    if (!isFeatureEnabled('dark-mode')) return;
+function updateAllToggleButtons(isDark) {
+    document.querySelectorAll('.theme-toggle').forEach(button => {
+        const icon = button.querySelector('.theme-icon');
+        const text = button.querySelector('.theme-text');
+        
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+        if (text) text.textContent = isDark ? 'Light' : 'Dark';
+    });
+}
+
+function loadSavedTheme() {
+    if (!features.darkMode) return;
     
     const savedTheme = localStorage.getItem('theme');
     
@@ -51,196 +50,145 @@ function loadThemePreference() {
         document.body.classList.add('dark-theme');
     }
     
-    console.log(`Loaded theme: ${savedTheme || 'light'} mode`);
+    console.log(`Theme loaded: ${savedTheme || 'light'}`);
 }
 
-// Update toggle button UI to match current theme
-function updateThemeButton() {
-    const isDark = document.body.classList.contains('dark-theme');
-    
-    document.querySelectorAll('.theme-toggle').forEach(button => {
-        const themeIcon = button.querySelector('#theme-icon') || button.querySelector('.theme-icon');
-        const themeText = button.querySelector('#theme-text') || button.querySelector('.theme-text');
-        
-        if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
-        if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
-    });
-}
-
-// ===================================
-// AUTO-ADD THEME TOGGLE TO NAVIGATION
-// ===================================
-function addThemeToggleToNav() {
-    if (!isFeatureEnabled('dark-mode')) return;
+function addThemeToggleButton() {
+    if (!features.darkMode) return;
     
     const nav = document.querySelector('nav');
     if (!nav) {
-        console.warn('Navigation not found - cannot add theme toggle');
+        console.warn('⚠️ Navigation not found');
         return;
     }
     
-    // Check if toggle already exists
+    // Check if button already exists
     if (document.querySelector('.theme-toggle')) {
-        updateThemeButton();
+        updateAllToggleButtons(document.body.classList.contains('dark-theme'));
         return;
     }
-
-    // Create toggle button
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'theme-toggle';
-    toggleButton.onclick = toggleTheme;
     
     const isDark = document.body.classList.contains('dark-theme');
-    toggleButton.innerHTML = `
-        <span id="theme-icon" class="theme-icon">${isDark ? '☀️' : '🌙'}</span>
-        <span id="theme-text" class="theme-text">${isDark ? 'Light' : 'Dark'}</span>
+    
+    const button = document.createElement('button');
+    button.className = 'theme-toggle';
+    button.onclick = toggleTheme;
+    button.innerHTML = `
+        <span class="theme-icon">${isDark ? '☀️' : '🌙'}</span>
+        <span class="theme-text">${isDark ? 'Light' : 'Dark'}</span>
     `;
     
-    // Add to navigation
-    nav.appendChild(toggleButton);
-    
-    console.log('✅ Dark mode toggle added to navigation');
+    nav.appendChild(button);
+    console.log('✅ Dark mode toggle added');
 }
 
-// ===================================
+// ============================================
 // SCROLL ANIMATIONS
-// ===================================
-function initializeScrollAnimations() {
-    if (!isFeatureEnabled('animations')) return;
+// ============================================
 
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
+function initScrollAnimations() {
+    if (!features.animations) return;
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('revealed');
             }
         });
-    }, observerOptions);
-
-    // Observe all elements with scroll-reveal class
-    document.querySelectorAll('.scroll-reveal').forEach(element => {
-        observer.observe(element);
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
-
-    // Auto-add scroll-reveal to common elements
-    document.querySelectorAll('.card, section > p, section > h2, section > h3').forEach(element => {
-        if (!element.classList.contains('scroll-reveal')) {
-            element.classList.add('scroll-reveal');
-            observer.observe(element);
-        }
+    
+    // Add scroll-reveal to elements
+    const elements = document.querySelectorAll('.card, section > p, section > h2, section > h3, .btn, .intro-container, section ul li');
+    
+    elements.forEach((el, index) => {
+        el.classList.add('scroll-reveal');
+        el.style.transitionDelay = `${index * 0.05}s`;
+        observer.observe(el);
     });
+    
+    console.log(`✅ Animations initialized for ${elements.length} elements`);
 }
 
-// ===================================
+// ============================================
 // PROJECT FILTERS
-// ===================================
-function initializeProjectFilters() {
-    if (!isFeatureEnabled('project-filters')) {
-        const filtersContainer = document.getElementById('projectFilters');
-        if (filtersContainer) filtersContainer.style.display = 'none';
+// ============================================
+
+function initProjectFilters() {
+    if (!features.projectFilters) {
+        const filters = document.getElementById('projectFilters');
+        if (filters) filters.style.display = 'none';
         return;
     }
-
+    
     const filterButtons = document.querySelectorAll('.filter-btn');
     const projectCards = document.querySelectorAll('.projects .card');
-
+    
     if (filterButtons.length === 0) return; // Not on projects page
-
+    
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remove active class from all buttons
+            // Remove active from all
             filterButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
+            // Add active to clicked
             button.classList.add('active');
-
+            
             const filter = button.getAttribute('data-filter');
-
+            
             projectCards.forEach((card, index) => {
-                if (filter === 'all') {
+                const tech = card.getAttribute('data-tech') || '';
+                const year = card.getAttribute('data-year') || '';
+                
+                if (filter === 'all' || tech.includes(filter) || year === filter) {
                     card.classList.remove('hidden');
                     card.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s`;
                 } else {
-                    const tech = card.getAttribute('data-tech') || '';
-                    const year = card.getAttribute('data-year') || '';
-                    
-                    if (tech.includes(filter) || year === filter) {
-                        card.classList.remove('hidden');
-                        card.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s`;
-                    } else {
-                        card.classList.add('hidden');
-                    }
+                    card.classList.add('hidden');
                 }
             });
         });
     });
-}
-
-// ===================================
-// ENHANCED NAVIGATION (Future Feature)
-// ===================================
-function initializeEnhancedNavigation() {
-    if (!isFeatureEnabled('enhanced-navigation')) return;
-
-    // Add smooth scroll behavior
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Add active page highlighting
-    const currentPage = window.location.pathname.split('/').pop();
-    document.querySelectorAll('nav a').forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
-            link.classList.add('active');
-        }
-    });
-}
-
-// ===================================
-// INITIALIZE ALL FEATURES
-// ===================================
-function initializeFeatures() {
-    console.log('🚀 Initializing feature flags...');
-    console.log('Active features:', Object.keys(featureFlags).filter(key => featureFlags[key]));
-
-    // CRITICAL: Load theme FIRST before anything else renders
-    loadThemePreference();
     
-    // Add theme toggle to navigation
-    addThemeToggleToNav();
-
-    // Initialize all other features
-    initializeScrollAnimations();
-    initializeProjectFilters();
-    initializeEnhancedNavigation();
-
-    console.log('✅ All features initialized successfully');
+    console.log('✅ Project filters initialized');
 }
 
-// Load theme preference IMMEDIATELY (even before DOM is ready)
-loadThemePreference();
+// ============================================
+// INITIALIZE EVERYTHING
+// ============================================
 
-// Run full initialization when DOM is ready
+function initializeAll() {
+    console.log('🎯 Initializing all features...');
+    
+    // Load theme first (immediate)
+    loadSavedTheme();
+    
+    // Add UI elements
+    addThemeToggleButton();
+    
+    // Initialize features
+    initScrollAnimations();
+    initProjectFilters();
+    
+    console.log('✅ All features ready!');
+}
+
+// ============================================
+// RUN ON PAGE LOAD
+// ============================================
+
+// Load theme immediately (prevents flash)
+loadSavedTheme();
+
+// Initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeFeatures);
+    document.addEventListener('DOMContentLoaded', initializeAll);
 } else {
-    initializeFeatures();
+    initializeAll();
 }
 
-// ===================================
-// MAKE TOGGLE FUNCTION GLOBALLY AVAILABLE
-// ===================================
-// This ensures toggleTheme() can be called from anywhere
+// Make toggle available globally
 window.toggleTheme = toggleTheme;
+
+console.log('✨ Site features loaded successfully!');
