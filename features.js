@@ -26,29 +26,80 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme');
     const isDark = document.body.classList.contains('dark-theme');
     
-    // Update toggle button if it exists
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
+    // Update ALL toggle buttons on the page (in case there are multiple)
+    document.querySelectorAll('.theme-toggle').forEach(button => {
+        const themeIcon = button.querySelector('#theme-icon') || button.querySelector('.theme-icon');
+        const themeText = button.querySelector('#theme-text') || button.querySelector('.theme-text');
+        
+        if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+        if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
+    });
     
-    if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
-    if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
-    
-    // Save preference to localStorage
+    // Save preference to localStorage (persists across ALL pages)
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    
+    console.log(`Theme switched to: ${isDark ? 'dark' : 'light'} mode`);
 }
 
-// Load saved theme preference
+// Load saved theme preference IMMEDIATELY (before page renders)
 function loadThemePreference() {
     if (!isFeatureEnabled('dark-mode')) return;
     
     const savedTheme = localStorage.getItem('theme');
+    
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
-        const themeIcon = document.getElementById('theme-icon');
-        const themeText = document.getElementById('theme-text');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        if (themeText) themeText.textContent = 'Light';
     }
+    
+    console.log(`Loaded theme: ${savedTheme || 'light'} mode`);
+}
+
+// Update toggle button UI to match current theme
+function updateThemeButton() {
+    const isDark = document.body.classList.contains('dark-theme');
+    
+    document.querySelectorAll('.theme-toggle').forEach(button => {
+        const themeIcon = button.querySelector('#theme-icon') || button.querySelector('.theme-icon');
+        const themeText = button.querySelector('#theme-text') || button.querySelector('.theme-text');
+        
+        if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+        if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
+    });
+}
+
+// ===================================
+// AUTO-ADD THEME TOGGLE TO NAVIGATION
+// ===================================
+function addThemeToggleToNav() {
+    if (!isFeatureEnabled('dark-mode')) return;
+    
+    const nav = document.querySelector('nav');
+    if (!nav) {
+        console.warn('Navigation not found - cannot add theme toggle');
+        return;
+    }
+    
+    // Check if toggle already exists
+    if (document.querySelector('.theme-toggle')) {
+        updateThemeButton();
+        return;
+    }
+
+    // Create toggle button
+    const toggleButton = document.createElement('button');
+    toggleButton.className = 'theme-toggle';
+    toggleButton.onclick = toggleTheme;
+    
+    const isDark = document.body.classList.contains('dark-theme');
+    toggleButton.innerHTML = `
+        <span id="theme-icon" class="theme-icon">${isDark ? '☀️' : '🌙'}</span>
+        <span id="theme-text" class="theme-text">${isDark ? 'Light' : 'Dark'}</span>
+    `;
+    
+    // Add to navigation
+    nav.appendChild(toggleButton);
+    
+    console.log('✅ Dark mode toggle added to navigation');
 }
 
 // ===================================
@@ -96,6 +147,8 @@ function initializeProjectFilters() {
 
     const filterButtons = document.querySelectorAll('.filter-btn');
     const projectCards = document.querySelectorAll('.projects .card');
+
+    if (filterButtons.length === 0) return; // Not on projects page
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -162,18 +215,24 @@ function initializeFeatures() {
     console.log('🚀 Initializing feature flags...');
     console.log('Active features:', Object.keys(featureFlags).filter(key => featureFlags[key]));
 
-    // Load theme preference first
+    // CRITICAL: Load theme FIRST before anything else renders
     loadThemePreference();
+    
+    // Add theme toggle to navigation
+    addThemeToggleToNav();
 
-    // Initialize all features
+    // Initialize all other features
     initializeScrollAnimations();
     initializeProjectFilters();
     initializeEnhancedNavigation();
 
-    console.log('✅ Features initialized successfully');
+    console.log('✅ All features initialized successfully');
 }
 
-// Run on page load
+// Load theme preference IMMEDIATELY (even before DOM is ready)
+loadThemePreference();
+
+// Run full initialization when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeFeatures);
 } else {
@@ -181,26 +240,7 @@ if (document.readyState === 'loading') {
 }
 
 // ===================================
-// UTILITY FUNCTIONS
+// MAKE TOGGLE FUNCTION GLOBALLY AVAILABLE
 // ===================================
-
-// Add theme toggle button to navigation (if dark mode is enabled)
-function addThemeToggleToNav() {
-    if (!isFeatureEnabled('dark-mode')) return;
-    
-    const nav = document.querySelector('nav');
-    if (!nav || document.querySelector('.theme-toggle')) return;
-
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'theme-toggle';
-    toggleButton.onclick = toggleTheme;
-    toggleButton.innerHTML = `
-        <span id="theme-icon">🌙</span>
-        <span id="theme-text">Dark</span>
-    `;
-    
-    nav.appendChild(toggleButton);
-}
-
-// Call this after DOM is loaded
-document.addEventListener('DOMContentLoaded', addThemeToggleToNav);
+// This ensures toggleTheme() can be called from anywhere
+window.toggleTheme = toggleTheme;
