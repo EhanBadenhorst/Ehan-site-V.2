@@ -8,75 +8,152 @@
 </head>
 <body>
     <nav>
-    <h1>Ehan B.</h1>
-    <ul>
-        <li><a href="home.html" class="active">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="skills.html">Skills</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="cv.html">CV</a></li>
-        <li><a href="contact.html">Contact</a></li>
-    </ul>
+        <h1>Ehan B.</h1>
+        <ul>
+            <li><a href="home.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="cv.html">CV</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <!-- Dark mode toggle will be added here automatically -->
     </nav>
 
     <section>
-            <div class="intro-container">
-                <img src="WhatsApp Image 2025-09-08 at 19.20.51_ca7b05aa.jpg" alt="Ehan Badenhorst" class="profile-pic">
-                <div class="intro-text">
-                    <h2>Hello, I'm <span style="color: var(--accent-color)">Ehan Badenhorst</span></h2>
-                    <p>Aspiring Software Engineer | Problem Solver | Tech Enthusiast</p>
-                    <p>Welcome! I’m Ehan Badenhorst, an aspiring software engineer with a strong foundation in both software and hardware systems. My academic journey has equipped me with practical experience in Python, core programming principles, and advanced web development using HTML, JavaScript, and CSS. I have built functional websites as part of my studies and am currently expanding my skills by learning Java. I am also familiar with Microsoft Azure services and version control tools such as Git and GitHub.</p>
-                    <p>Growing up on a farm, I developed a deep appreciation for the agricultural sector and understand the importance of integrating technology to drive efficiency and informed decision-making. My hands-on experience in agriculture, combined with my technical expertise, allows me to bridge the gap between traditional practices and modern solutions.</p>
-                    <p>In addition to my technical skills, I bring a strong work ethic, discipline, and adaptability—qualities honed through years of working on a dairy farm. I am experienced in troubleshooting, installation, and maintenance of hardware and software systems, and I value both independent work and effective teamwork.</p>
-                    <p>I am highly motivated to build my career in IT and am eager to contribute my skills and passion to a forward-thinking team. Thank you for visiting my website—I look forward to connecting and exploring new opportunities!</p>
-                </div>
+        <div class="intro-container">
+            <img src="WhatsApp Image 2025-09-08 at 19.20.51_ca7b05aa.jpg" alt="Ehan Badenhorst" class="profile-pic">
+            <div class="intro-text">
+                <h2>Hello, I'm <span style="color: var(--accent-color)">Ehan Badenhorst</span></h2>
+                <p>Aspiring Software Engineer | Problem Solver | Tech Enthusiast</p>
+                <p>Welcome! I'm Ehan Badenhorst, an aspiring software engineer with a strong foundation in both software and hardware systems. My academic journey has equipped me with practical experience in Python, core programming principles, and advanced web development using HTML, JavaScript, and CSS. I have built functional websites as part of my studies and am currently expanding my skills by learning Java. I am also familiar with Microsoft Azure services and version control tools such as Git and GitHub.</p>
+                <p>Growing up on a farm, I developed a deep appreciation for the agricultural sector and understand the importance of integrating technology to drive efficiency and informed decision-making. My hands-on experience in agriculture, combined with my technical expertise, allows me to bridge the gap between traditional practices and modern solutions.</p>
+                <p>In addition to my technical skills, I bring a strong work ethic, discipline, and adaptability—qualities honed through years of working on a dairy farm. I am experienced in troubleshooting, installation, and maintenance of hardware and software systems, and I value both independent work and effective teamwork.</p>
+                <p>I am highly motivated to build my career in IT and am eager to contribute my skills and passion to a forward-thinking team. Thank you for visiting my website—I look forward to connecting and exploring new opportunities!</p>
             </div>
-            <br>
-    <a href="cv.html" class="btn">View My CV</a>
-    <a href="contact.html" class="btn">Contact Me</a>
+        </div>
+        <br>
+        <a href="cv.html" class="btn">View My CV</a>
+        <a href="contact.html" class="btn">Contact Me</a>
     </section>
 
     <footer>
-        <style>
-            section p {
-                margin-bottom: 1.2em;
-            }
-        </style>
-        <style>
-            .intro-container {
-                display: flex;
-                align-items: flex-start;
-                gap: 2rem;
-                flex-wrap: wrap;
-            }
-            .profile-pic {
-                width: 220px;
-                height: 220px;
-                object-fit: cover;
-                border-radius: 30px;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-                border: 3px solid #e0e0e0;
-                background: #fafafa;
-                margin-bottom: 1rem;
-            }
-            .intro-text {
-                flex: 1 1 320px;
-                min-width: 260px;
-            }
-            @media (max-width: 700px) {
-                .intro-container {
-                    flex-direction: column;
-                    align-items: center;
-                }
-                .profile-pic {
-                    margin-bottom: 1.5rem;
-                }
-                .intro-text {
-                    min-width: 0;
-                }
-            }
-        </style>
-    &copy; 2025 Ehan Badenhorst | All Rights Reserved
+        &copy; 2025 Ehan Badenhorst | All Rights Reserved
     </footer>
+
+    <!-- CRITICAL: Features JavaScript - Must be before </body> -->
+    <script>
+        // Feature Flags Configuration
+        const featureFlags = {
+            'dark-mode': true,
+            'animations': true
+        };
+
+        function isFeatureEnabled(flagName) {
+            return featureFlags[flagName] === true;
+        }
+
+        // Dark Mode Toggle Function
+        function toggleTheme() {
+            if (!isFeatureEnabled('dark-mode')) return;
+            
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            // Update button
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+            if (themeText) themeText.textContent = isDark ? 'Light' : 'Dark';
+            
+            // Save preference
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            console.log('Theme toggled to:', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme preference IMMEDIATELY
+        function loadTheme() {
+            if (!isFeatureEnabled('dark-mode')) return;
+            
+            const savedTheme = localStorage.getItem('theme');
+            console.log('Loading saved theme:', savedTheme);
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+        }
+
+        // Add dark mode toggle button to nav
+        function addThemeToggle() {
+            if (!isFeatureEnabled('dark-mode')) return;
+            
+            const nav = document.querySelector('nav');
+            if (!nav) {
+                console.error('Navigation not found!');
+                return;
+            }
+            
+            // Check if button already exists
+            if (document.querySelector('.theme-toggle')) {
+                console.log('Theme toggle already exists');
+                return;
+            }
+
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'theme-toggle';
+            toggleButton.onclick = toggleTheme;
+            toggleButton.innerHTML = `
+                <span id="theme-icon">${isDark ? '☀️' : '🌙'}</span>
+                <span id="theme-text">${isDark ? 'Light' : 'Dark'}</span>
+            `;
+            
+            nav.appendChild(toggleButton);
+            console.log('✅ Theme toggle button added to navigation');
+        }
+
+        // Scroll animations
+        function initAnimations() {
+            if (!isFeatureEnabled('animations')) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('section > p, .card, .btn').forEach(element => {
+                element.classList.add('scroll-reveal');
+                observer.observe(element);
+            });
+        }
+
+        // Initialize everything
+        function init() {
+            console.log('🚀 Initializing features...');
+            loadTheme();
+            addThemeToggle();
+            initAnimations();
+            console.log('✅ Features initialized');
+        }
+
+        // Load theme ASAP
+        loadTheme();
+
+        // Run full init when DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
 </body>
 </html>
