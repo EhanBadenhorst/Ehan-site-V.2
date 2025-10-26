@@ -136,6 +136,55 @@ h3 {
   margin-top: 20px;
 }
 
+
+/* Mobile nav + theme toggle styles (adjust to match your site) */
+.nav-toggle {
+  display: none; /* shown via JS on small screens */
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  align-items: center;
+}
+
+nav {
+  /* allow transition if desired */
+  transition: all 0.2s ease;
+}
+
+/* When nav-open class is set, nav will be visible on mobile */
+nav.nav-open {
+  display: block !important;
+}
+
+/* mobile-tools holds mobile-only actions (e.g., theme toggle) */
+.mobile-tools {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Theme toggle mobile tweaks */
+.theme-toggle.theme-toggle-mobile {
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Responsive rules */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+  nav {
+    display: none; /* hidden by default until opened by JS */
+  }
+  /* Example: stack mobile-tools near top */
+  .mobile-tools {
+    display: flex;
+  }
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
@@ -412,3 +461,4 @@ section p {
     justify-content: center;
   }
 }
+
