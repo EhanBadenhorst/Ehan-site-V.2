@@ -105,6 +105,28 @@ nav ul li a.active {
 }
 
 /* -------------------------
+   Mobile Nav Scroll Hide
+   ------------------------- */
+nav {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+nav.nav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Only apply hide behavior on mobile */
+@media (min-width: 769px) {
+  nav.nav-hidden {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* -------------------------
    Theme Toggle Button
    ------------------------- */
 .theme-toggle {
@@ -483,3 +505,4 @@ footer {
     padding: 30px 12px;
   }
 }
+
