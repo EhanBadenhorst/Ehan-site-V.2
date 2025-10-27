@@ -9,11 +9,53 @@ console.log('🚀 Loading site features...');
 const features = {
     darkMode: true,
     animations: true,
-    projectFilters: true
+    projectFilters: true,
+    mobileNavHide: true  // New feature!
 };
 
 // Mobile breakpoint (px)
 const MOBILE_BREAKPOINT = 768;
+
+// ============================================
+// MOBILE NAV SCROLL BEHAVIOR
+// ============================================
+
+let lastScrollTop = 0;
+let scrollTimeout;
+
+function initMobileNavScroll() {
+    if (!features.mobileNavHide) return;
+    
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+    
+    window.addEventListener('scroll', () => {
+        // Only on mobile
+        if (window.innerWidth > MOBILE_BREAKPOINT) {
+            nav.classList.remove('nav-hidden');
+            return;
+        }
+        
+        // Clear timeout to debounce
+        clearTimeout(scrollTimeout);
+        
+        scrollTimeout = setTimeout(() => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 80) {
+                // Scrolling down - hide nav
+                nav.classList.add('nav-hidden');
+            } else {
+                // Scrolling up - show nav
+                nav.classList.remove('nav-hidden');
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, 10);
+    });
+    
+    console.log('✅ Mobile nav scroll behavior initialized');
+}
 
 // ============================================
 // DARK MODE FUNCTIONALITY
@@ -65,10 +107,9 @@ function addThemeToggleButton() {
         return;
     }
     
-    // If button already exists, update and ensure placement
+    // Check if button already exists
     if (document.querySelector('.theme-toggle')) {
         updateAllToggleButtons(document.body.classList.contains('dark-theme'));
-        placeThemeToggleForViewport();
         return;
     }
     
@@ -82,90 +123,10 @@ function addThemeToggleButton() {
         <span class="theme-text">${isDark ? 'Light' : 'Dark'}</span>
     `;
     
-    // Default placement: inside nav (desktop)
     nav.appendChild(button);
-    placeThemeToggleForViewport();
-    window.addEventListener('resize', placeThemeToggleForViewport);
-    
     console.log('✅ Dark mode toggle added');
 }
 
-function placeThemeToggleForViewport() {
-    const button = document.querySelector('.theme-toggle');
-    if (!button) return;
-    const nav = document.querySelector('nav');
-
-    // Find an existing mobile container or header actions area
-    let mobileContainer = document.querySelector('.mobile-tools') || document.querySelector('.header-actions') || null;
-
-    if (window.innerWidth <= MOBILE_BREAKPOINT) {
-        // Ensure there's a mobile container to hold the toggle
-        if (!mobileContainer) {
-            mobileContainer = document.createElement('div');
-            mobileContainer.className = 'mobile-tools';
-            // Place mobile-tools at top of body if no header-actions exists
-            if (document.body.firstChild) {
-                document.body.insertBefore(mobileContainer, document.body.firstChild);
-            } else {
-                document.body.appendChild(mobileContainer);
-            }
-        }
-        if (button.parentNode !== mobileContainer) {
-            mobileContainer.appendChild(button);
-        }
-        button.classList.add('theme-toggle-mobile');
-    } else {
-        // Put back inside nav (desktop)
-        if (nav && button.parentNode !== nav) {
-            nav.appendChild(button);
-        }
-        button.classList.remove('theme-toggle-mobile');
-    }
-}
-
-// ============================================
-// MOBILE NAV BEHAVIOR (KEEP NAV VISIBLE)
-// ============================================
-
-function initMobileNav() {
-    const nav = document.querySelector('nav');
-    if (!nav) return;
-    if (nav.dataset.mobileInit === 'true') return; // already initialized
-    nav.dataset.mobileInit = 'true';
-
-    // Ensure nav remains visible on mobile; no hamburger created.
-    nav.style.display = ''; // let CSS handle layout
-    // Make nav sticky via CSS (see CSS snippet)
-    // Ensure theme toggle placement updates on resize
-    window.addEventListener('resize', placeThemeToggleForViewport);
-
-    console.log('✅ Mobile nav initialized: navigation will remain visible at the top (no hamburger).');
-}
-// Wait for the document to be fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Get the hamburger button and the navigation links container
-    const menuToggle = document.querySelector('.menu-toggle'); // Or '.hamburger-menu', etc.
-    const navLinks = document.querySelector('.nav-links');
-
-    if (menuToggle && navLinks) {
-        // Add a click event listener to the hamburger button
-        menuToggle.addEventListener('click', () => {
-            // This line adds/removes the 'active' class
-            navLinks.classList.toggle('active');
-        });
-
-        // --- OPTIONAL (BUT RECOMMENDED) ---
-        // This closes the menu when you click a link
-        const allNavLinks = document.querySelectorAll('.nav-links li a');
-        
-        allNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
-    }
-});
 // ============================================
 // SCROLL ANIMATIONS
 // ============================================
@@ -250,7 +211,9 @@ function initializeAll() {
     
     // Add UI elements
     addThemeToggleButton();
-    initMobileNav();
+    
+    // Initialize mobile nav scroll behavior
+    initMobileNavScroll();
     
     // Initialize features
     initScrollAnimations();
